@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PawCare — Pet Health Advice</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,800;1,400;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --g900: #0f3d22;
+  --g800: #1a5c35;
+  --g700: #216e3e;
+  --g600: #2d8653;
+  --g500: #3aa068;
+  --g400: #5cba83;
+  --g300: #8dd4a8;
+  --g200: #c0eacf;
+  --g100: #e8f7ee;
+  --g50:  #f4fbf6;
+  --white:#ffffff;
+  --text: #0f2318;
+  --text2:#4a6657;
+  --text3:#7fa890;
+  --border:rgba(45,134,83,0.15);
+  --shadow:rgba(15,61,34,0.10);
+  --radius:16px;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  font-family:'Plus Jakarta Sans', sans-serif;
+  background:var(--white);
+  color:var(--text);
+  overflow-x:hidden;
+}
+
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:var(--g50); }
+::-webkit-scrollbar-thumb { background:var(--g400); border-radius:99px; }
+
+/* ══ NAV ══════════════════════════════════════════════ */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:900;
+  height:64px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 6vw;
+  background:rgba(255,255,255,0.94);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  box-shadow:0 1px 20px var(--shadow);
+}
+.nav-logo {
+  font-family:'Fraunces', serif; font-weight:800; font-size:1.45rem;
+  color:var(--g800); display:flex; align-items:center; gap:8px;
+  letter-spacing:-0.02em;
+}
+.nav-logo em { font-style:italic; color:var(--g500); }
+.nav-links { display:flex; gap:28px; list-style:none; }
+.nav-links a {
+  text-decoration:none; font-size:0.83rem; font-weight:600;
+  color:var(--text2); letter-spacing:0.02em;
+  transition:color 0.2s; position:relative;
+}
+.nav-links a::after {
+  content:''; position:absolute; bottom:-4px; left:0; right:0; height:2px;
+  background:var(--g500); border-radius:99px;
+  transform:scaleX(0); transform-origin:left; transition:transform 0.22s;
+}
+.nav-links a:hover { color:var(--g700); }
+.nav-links a:hover::after { transform:scaleX(1); }
+.nav-pill {
+  background:var(--g800); color:#fff;
+  padding:8px 20px; border-radius:99px; border:none;
+  font-family:'Plus Jakarta Sans',sans-serif; font-size:0.8rem; font-weight:700;
+  cursor:pointer; letter-spacing:0.04em;
+  box-shadow:0 4px 14px rgba(15,61,34,0.25);
+  transition:all 0.2s;
+}
+.nav-pill:hover { background:var(--g700); transform:translateY(-1px); }
+
+/* ══ HERO ══════════════════════════════════════════════ */
+#hero {
+  min-height:100vh; display:flex; align-items:center;
+  padding:100px 6vw 70px;
+  position:relative; overflow:hidden;
+  background:linear-gradient(150deg, var(--white) 55%, var(--g50) 100%);
+}
+/* subtle grid */
+#hero::before {
+  content:'';
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(45,134,83,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45,134,83,0.05) 1px, transparent 1px);
+  background-size:44px 44px;
+  pointer-events:none;
+}
+.hero-glow {
+  position:absolute; right:-80px; top:50%;
+  transform:translateY(-50%);
+  width:600px; height:600px; border-radius:50%;
+  background:radial-gradient(circle, rgba(58,160,104,0.12), transparent 65%);
+  pointer-events:none;
+}
+.hero-content { position:relative; z-index:1; max-width:600px; }
+
+.hero-chip {
+  display:inline-flex; align-items:center; gap:7px;
+  background:var(--g100); border:1px solid var(--g200);
+  border-radius:99px; padding:6px 16px;
+  font-size:0.72rem; font-weight:700; color:var(--g700);
+  letter-spacing:0.1em; text-transform:uppercase; margin-bottom:22px;
+  animation:rise 0.7s ease both;
+}
+.hero-content h1 {
+  font-family:'Fraunces', serif; font-weight:800;
+  font-size:clamp(2.8rem,5.2vw,4rem); line-height:1.06;
+  color:var(--g900); margin-bottom:20px;
+  animation:rise 0.75s 0.08s ease both;
+}
+.hero-content h1 em { font-style:italic; color:var(--g600); }
+.hero-content p {
+  font-size:1.05rem; color:var(--text2); line-height:1.75;
+  margin-bottom:36px; font-weight:400;
+  animation:rise 0.75s 0.16s ease both;
+}
+.hero-btns {
+  display:flex; gap:12px; flex-wrap:wrap;
+  animation:rise 0.75s 0.22s ease both;
+}
+.btn-green {
+  background:var(--g800); color:#fff;
+  padding:13px 28px; border-radius:99px; border:none;
+  font-family:'Plus Jakarta Sans',sans-serif; font-size:0.9rem; font-weight:700;
+  cursor:pointer; letter-spacing:0.03em;
+  box-shadow:0 6px 22px rgba(15,61,34,0.28);
+  transition:all 0.2s; display:flex; align-items:center; gap:8px;
+}
+.btn-green:hover { background:var(--g700); transform:translateY(-2px); box-shadow:0 10px 28px rgba(15,61,34,0.33); }
+.btn-ghost {
+  background:transparent; color:var(--g800);
+  padding:13px 28px; border-radius:99px;
+  border:2px solid var(--g300);
+  font-family:'Plus Jakarta Sans',sans-serif; font-size:0.9rem; font-weight:700;
+  cursor:pointer; transition:all 0.2s;
+}
+.btn-ghost:hover { border-color:var(--g500); background:var(--g50); transform:translateY(-2px); }
+
+.hero-facts {
+  display:flex; gap:40px; margin-top:52px; flex-wrap:wrap;
+  animation:rise 0.75s 0.28s ease both;
+}
+.fact { display:flex; flex-direction:column; gap:2px; }
+.fact-n { font-family:'Fraunces',serif; font-size:2rem; font-weight:800; color:var(--g700); }
+.fact-l { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text3); }
+
+/* floating cards */
+.hero-cards {
+  position:absolute; right:6vw; top:50%; transform:translateY(-50%);
+  display:flex; flex-direction:column; gap:14px; z-index:1;
+}
+.hcard {
+  background:rgba(255,255,255,0.92); backdrop-filter:blur(10px);
+  border:1px solid var(--border);
+  border-radius:18px; padding:15px 18px;
+  display:flex; align-items:center; gap:13px;
+  box-shadow:0 8px 28px var(--shadow); min-width:230px;
+  animation:float 5s ease-in-out infinite;
+}
+.hcard:nth-child(2){ animation-delay:-1.8s; margin-left:26px; }
+.hcard:nth-child(3){ animation-delay:-3.3s; }
+.hcard-icon { font-size:1.8rem; }
+.hcard-name { font-weight:700; font-size:0.84rem; color:var(--g800); }
+.hcard-sub  { font-size:0.69rem; color:var(--text3); margin-top:1px; }
+.hcard-tag  {
+  margin-left:auto;
+  background:var(--g100); color:var(--g700);
+  font-size:0.62rem; font-weight:700; padding:3px 9px;
+  border-radius:99px; text-transform:uppercase; letter-spacing:0.06em;
+  white-space:nowrap;
+}
+
+@keyframes rise  { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+/* ══ SECTION COMMON ═══════════════════════════════════ */
+.sec { padding:88px 6vw; }
+.sec-tag {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:0.7rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--g600); background:var(--g100); border:1px solid var(--g200);
+  border-radius:99px; padding:5px 14px; margin-bottom:14px;
+}
+.sec-title {
+  font-family:'Fraunces',serif; font-size:clamp(1.9rem,3.2vw,2.7rem);
+  font-weight:800; color:var(--g900); line-height:1.15; margin-bottom:10px;
+}
+.sec-title em { font-style:italic; color:var(--g600); }
+.sec-sub { font-size:0.95rem; color:var(--text2); line-height:1.75; max-width:500px; margin-bottom:48px; }
+
+/* ══ DISCLAIMER BANNER ════════════════════════════════ */
+.disclaimer-banner {
+  background:linear-gradient(135deg, var(--g100), #e8f7ee);
+  border:1px solid var(--g200); border-radius:var(--radius);
+  padding:18px 24px; margin:0 6vw 0;
+  display:flex; align-items:flex-start; gap:13px;
+  box-shadow:0 2px 12px rgba(45,134,83,0.08);
+}
+.disclaimer-banner .di { font-size:1.4rem; flex-shrink:0; margin-top:1px; }
+.disclaimer-banner p { font-size:0.82rem; color:var(--text2); line-height:1.7; }
+.disclaimer-banner p strong { color:var(--g700); }
+
+/* ══ ADVISOR ══════════════════════════════════════════ */
+#advisor { background:var(--g50); }
+.advisor-grid {
+  display:grid; grid-template-columns:1fr 1.08fr; gap:52px; align-items:start;
+}
+
+/* Form panel */
+.form-panel {
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:22px; padding:34px 30px;
+  box-shadow:0 8px 36px var(--shadow);
+}
+.form-panel h3 {
+  font-family:'Fraunces',serif; font-size:1.45rem; font-weight:700;
+  color:var(--g900); margin-bottom:4px;
+}
+.form-panel > p { font-size:0.8rem; color:var(--text3); margin-bottom:26px; }
+
+.fg { display:flex; flex-direction:column; gap:6px; margin-bottom:16px; }
+.fg label {
+  font-size:0.72rem; font-weight:700; text-transform:uppercase;
+  letter-spacing:0.09em; color:var(--g700);
+}
+.fg input, .fg select, .fg textarea {
+  font-family:'Plus Jakarta Sans',sans-serif; font-size:0.87rem; color:var(--text);
+  background:var(--g50); border:1.5px solid var(--border);
+  border-radius:10px; padding:10px 14px;
+  transition:border-color 0.2s, box-shadow 0.2s; outline:none; width:100%;
+}
+.fg input:focus, .fg select:focus, .fg textarea:focus {
+  border-color:var(--g400); box-shadow:0 0 0 3px rgba(58,160,104,0.12);
+  background:var(--white);
+}
+.fg textarea { resize:vertical; min-height:80px; }
+.row2 { display:grid; grid-template-columns:1fr 1fr; gap:13px; }
+
+/* Pet type buttons */
+.pet-grid { display:flex; gap:9px; flex-wrap:wrap; }
+.pt-btn {
+  flex:1; min-width:62px;
+  background:var(--g50); border:1.5px solid var(--border);
+  border-radius:12px; padding:10px 6px;
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  cursor:pointer; transition:all 0.2s; font-family:'Plus Jakarta Sans',sans-serif;
+}
+.pt-btn .ico { font-size:1.45rem; }
+.pt-btn .lbl { font-size:0.65rem; font-weight:700; color:var(--text3); letter-spacing:0.04em; }
+.pt-btn:hover   { border-color:var(--g400); background:var(--g100); }
+.pt-btn.sel     {
+  border-color:var(--g700); background:rgba(45,134,83,0.08);
+  box-shadow:0 4px 14px rgba(45,134,83,0.18);
+}
+.pt-btn.sel .lbl { color:var(--g700); }
+
+/* Symptom chips */
+.chips { display:flex; flex-wrap:wrap; gap:7px; }
+.chip {
+  font-family:'Plus Jakarta Sans',sans-serif; font-size:0.72rem; font-weight:600;
+  padding:6px 13px; border-radius:99px; cursor:pointer;
+  border:1.5px solid var(--border); background:var(--g50); color:var(--text2);
+  transition:all 0.17s; user-select:none;
+}
+.chip:hover { border-color:var(--g400); color:var(--g700); }
+.chip.on {
+  background:var(--g800); color:#fff; border-color:var(--g800);
+  box-shadow:0 3px 10px rgba(15,61,34,0.22);
+}
+
+.btn-go {
+  width:100%; padding:14px; border-radius:12px; border:none;
+  background:linear-gradient(135deg, var(--g800), var(--g600));
+  color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.93rem; font-weight:700;
+  cursor:pointer; letter-spacing:0.03em;
+  box-shadow:0 6px 22px rgba(15,61,34,0.28);
+  transition:all 0.2s; margin-top:6px;
+  display:flex; align-items:center; justify-content:center; gap:9px;
+}
+.btn-go:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(15,61,34,0.35); }
+.btn-go:active { transform:translateY(0); }
+
+/* Results */
+.results { display:flex; flex-direction:column; gap:16px; min-height:280px; }
+.res-empty {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  height:300px; border:2px dashed var(--g200); border-radius:20px;
+  color:var(--text3); text-align:center; padding:30px;
+}
+.res-empty .e-icon { font-size:3rem; margin-bottom:14px; opacity:0.45; }
+.res-empty p { font-size:0.83rem; line-height:1.65; max-width:220px; }
+
+/* Result blocks */
+.res-header {
+  background:linear-gradient(135deg, var(--g900), var(--g700));
+  border-radius:16px; padding:22px 24px; color:#fff;
+  display:flex; align-items:center; gap:14px;
+}
+.res-avatar { font-size:2.6rem; }
+.res-name { font-family:'Fraunces',serif; font-size:1.25rem; font-weight:700; }
+.res-meta  { font-size:0.77rem; opacity:0.72; margin-top:2px; }
+.score-box {
+  margin-left:auto; background:rgba(255,255,255,0.15);
+  border-radius:12px; padding:10px 16px; text-align:center;
+}
+.score-n { font-family:'Fraunces',serif; font-size:1.8rem; font-weight:800; }
+.score-l { font-size:0.6rem; opacity:0.75; letter-spacing:0.09em; text-transform:uppercase; }
+
+.rblock {
+  background:var(--white); border:1px solid var(--border);
+  border-radius:14px; padding:20px 22px;
+  box-shadow:0 3px 16px var(--shadow);
+}
+.rblock-title {
+  display:flex; align-items:center; gap:9px;
+  font-family:'Fraunces',serif; font-size:0.98rem; font-weight:700;
+  color:var(--g900); margin-bottom:13px;
+}
+.ri {
+  width:30px; height:30px; border-radius:8px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:0.95rem;
+}
+.rlist { list-style:none; display:flex; flex-direction:column; gap:9px; }
+.rlist li {
+  font-size:0.83rem; color:var(--text2); line-height:1.65;
+  padding-left:16px; position:relative;
+}
+.rlist li::before {
+  content:''; position:absolute; left:0; top:8px;
+  width:6px; height:6px; border-radius:50%; background:var(--g400);
+}
+.rlist li strong { color:var(--g800); }
+.med-pill {
+  display:inline-block; background:var(--g100); color:var(--g800);
+  font-size:0.72rem; font-weight:700; padding:2px 9px; border-radius:99px;
+  border:1px solid var(--g200); margin:2px 3px 2px 0; vertical-align:middle;
+}
+.urgent-strip {
+  background:rgba(200,40,40,0.06); border-left:3px solid #c0392b;
+  border-radius:0 12px 12px 0;
+}
+.urgent-strip .rblock-title { color:#b03020; }
+.utag {
+  font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em;
+  background:rgba(192,57,43,0.1); color:#b03020;
+  border:1px solid rgba(192,57,43,0.2); padding:2px 9px; border-radius:99px; margin-left:6px;
+}
+.ok-strip { border-left:3px solid var(--g400); }
+
+/* Dots loader */
+.ldots { display:flex; gap:7px; justify-content:center; padding:50px; }
+.ld { width:10px; height:10px; border-radius:50%; background:var(--g400); animation:bop 1.2s ease-in-out infinite; }
+.ld:nth-child(2){ animation-delay:.18s; } .ld:nth-child(3){ animation-delay:.36s; }
+@keyframes bop { 0%,80%,100%{transform:scale(0.65);opacity:0.4} 40%{transform:scale(1.1);opacity:1} }
+
+/* ══ KNOWLEDGE CARDS ══════════════════════════════════ */
+#know { background:var(--white); }
+.know-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:20px; }
+.kcard {
+  border-radius:18px; overflow:hidden;
+  border:1px solid var(--border);
+  transition:transform 0.23s, box-shadow 0.23s; background:var(--white);
+}
+.kcard:hover { transform:translateY(-4px); box-shadow:0 16px 38px var(--shadow); }
+.kcard-top { padding:26px 24px 20px; }
+.kcard-top .kem { font-size:2rem; margin-bottom:12px; display:block; }
+.kcard-top h4 { font-family:'Fraunces',serif; font-size:1.05rem; font-weight:700; color:var(--g900); margin-bottom:6px; }
+.kcard-top p  { font-size:0.81rem; color:var(--text2); line-height:1.65; }
+.kcard-foot {
+  padding:11px 24px; border-top:1px solid var(--border);
+  font-size:0.73rem; font-weight:700; color:var(--g600);
+  background:var(--g50); letter-spacing:0.03em;
+}
+
+/* ══ WHEN TO VET ══════════════════════════════════════ */
+#vet-signs { background:var(--g50); }
+.signs-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; }
+.sign-card {
+  background:var(--white); border-radius:14px; padding:20px 20px;
+  border:1px solid var(--border); display:flex; align-items:flex-start; gap:13px;
+  box-shadow:0 2px 12px var(--shadow);
+  transition:transform 0.2s, box-shadow 0.2s;
+}
+.sign-card:hover { transform:translateY(-3px); box-shadow:0 8px 24px var(--shadow); }
+.sign-dot {
+  width:36px; height:36px; border-radius:10px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:1.1rem;
+}
+.sign-card h5 { font-size:0.88rem; font-weight:700; color:var(--g900); margin-bottom:4px; }
+.sign-card p  { font-size:0.77rem; color:var(--text2); line-height:1.6; }
+
+/* ══ FOOTER ═══════════════════════════════════════════ */
+footer {
+  background:var(--g900); color:rgba(255,255,255,0.8);
+  padding:52px 6vw 28px;
+}
+.foot-grid { display:grid; grid-template-columns:2fr 1fr 1fr; gap:44px; margin-bottom:36px; }
+.foot-brand h3 { font-family:'Fraunces',serif; font-size:1.4rem; color:#fff; margin-bottom:9px; }
+.foot-brand h3 em { font-style:italic; color:var(--g400); }
+.foot-brand p { font-size:0.8rem; line-height:1.7; color:rgba(255,255,255,0.5); max-width:260px; }
+.foot-disc {
+  margin-top:14px; background:rgba(255,255,255,0.07); border-radius:10px;
+  padding:12px 14px; font-size:0.74rem; color:rgba(255,255,255,0.45); line-height:1.6;
+  border:1px solid rgba(255,255,255,0.1);
+}
+.foot-col h4 { font-size:0.74rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--g300); margin-bottom:13px; }
+.foot-col a, .foot-col p { display:block; font-size:0.8rem; color:rgba(255,255,255,0.5); text-decoration:none; margin-bottom:7px; transition:color 0.2s; }
+.foot-col a:hover { color:#fff; }
+.foot-bottom {
+  border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:0.75rem; color:rgba(255,255,255,0.3); flex-wrap:wrap; gap:8px;
+}
+
+/* ══ RESPONSIVE ═══════════════════════════════════════ */
+@media(max-width:960px){
+  .advisor-grid { grid-template-columns:1fr; gap:32px; }
+  .hero-cards   { display:none; }
+  .foot-grid    { grid-template-columns:1fr 1fr; }
+  .nav-links, .nav-pill { display:none; }
+}
+@media(max-width:540px){
+  .row2       { grid-template-columns:1fr; }
+  .foot-grid  { grid-template-columns:1fr; }
+  .hero-facts { gap:24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">🐾 Paw<em>Care</em></div>
+  <ul class="nav-links">
+    <li><a href="#advisor">Health Advisor</a></li>
+    <li><a href="#know">Medicine Guide</a></li>
+    <li><a href="#vet-signs">When to See a Vet</a></li>
+  </ul>
+  <button class="nav-pill" onclick="document.getElementById('advisor').scrollIntoView({behavior:'smooth'})">Get Advice Free</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-chip">🌿 100% Free · No Booking Required</div>
+    <h1>Smart Pet Health<br><em>Advice & Medicine</em><br>Suggestions</h1>
+    <p>Tell us about your pet's symptoms and we'll suggest the right medicines, remedies, and care steps — all from the comfort of your home.</p>
+    <div class="hero-btns">
+      <button class="btn-green" onclick="document.getElementById('advisor').scrollIntoView({behavior:'smooth'})">🩺 Check My Pet Now</button>
+      <button class="btn-ghost" onclick="document.getElementById('know').scrollIntoView({behavior:'smooth'})">Medicine Guide →</button>
+    </div>
+    <div class="hero-facts">
+      <div class="fact"><span class="fact-n">50+</span><span class="fact-l">Conditions Covered</span></div>
+      <div class="fact"><span class="fact-n">6</span><span class="fact-l">Pet Types</span></div>
+      <div class="fact"><span class="fact-n">Free</span><span class="fact-l">Always</span></div>
+    </div>
+  </div>
+  <div class="hero-cards">
+    <div class="hcard"><div class="hcard-icon">🐶</div><div><div class="hcard-name">Max · Labrador</div><div class="hcard-sub">Skin allergy suggestions</div></div><div class="hcard-tag">Advised</div></div>
+    <div class="hcard"><div class="hcard-icon">🐱</div><div><div class="hcard-name">Luna · Persian</div><div class="hcard-sub">Digestive care tips</div></div><div class="hcard-tag">Advised</div></div>
+    <div class="hcard"><div class="hcard-icon">🐰</div><div><div class="hcard-name">Coco · Holland Lop</div><div class="hcard-sub">GI health guide</div></div><div class="hcard-tag">Advised</div></div>
+  </div>
+</section>
+
+<!-- DISCLAIMER -->
+<div class="disclaimer-banner" style="margin-top:0; margin-bottom:0; border-radius:0; border-left:none; border-right:none; border-top:none;">
+  <div class="di">⚠️</div>
+  <p><strong>Important Disclaimer:</strong> PawCare provides general educational health suggestions and common medicine information only. We do <strong>not</strong> diagnose, treat, or prescribe. Always consult a licensed veterinarian before giving your pet any medication. In emergencies, seek immediate professional care.</p>
+</div>
+
+<!-- ADVISOR -->
+<section class="sec" id="advisor" style="background:var(--g50)">
+  <div class="sec-tag">🤖 Symptom Checker</div>
+  <h2 class="sec-title">Pet Health <em>Advisor</em></h2>
+  <p class="sec-sub">Enter your pet's details and symptoms — get personalised medicine suggestions and home care advice instantly.</p>
+
+  <div class="advisor-grid">
+    <!-- FORM -->
+    <div class="form-panel">
+      <h3>🐾 About Your Pet</h3>
+      <p>Fill in all details for the most accurate suggestions.</p>
+
+      <div class="fg">
+        <label>Pet Type</label>
+        <div class="pet-grid" id="ptGrid">
+          <button class="pt-btn" data-t="dog">    <span class="ico">🐶</span><span class="lbl">Dog</span></button>
+          <button class="pt-btn" data-t="cat">    <span class="ico">🐱</span><span class="lbl">Cat</span></button>
+          <button class="pt-btn" data-t="rabbit"> <span class="ico">🐰</span><span class="lbl">Rabbit</span></button>
+          <button class="pt-btn" data-t="bird">   <span class="ico">🐦</span><span class="lbl">Bird</span></button>
+          <button class="pt-btn" data-t="fish">   <span class="ico">🐠</span><span class="lbl">Fish</span></button>
+          <button class="pt-btn" data-t="other">  <span class="ico">🦔</span><span class="lbl">Other</span></button>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="fg"><label>Pet Name</label><input id="pName" type="text" placeholder="e.g. Buddy"/></div>
+        <div class="fg"><label>Breed (optional)</label><input id="pBreed" type="text" placeholder="e.g. Labrador"/></div>
+      </div>
+      <div class="row2">
+        <div class="fg">
+          <label>Age Group</label>
+          <select id="pAge">
+            <option value="">Select age</option>
+            <option value="baby">Baby (0–6 months)</option>
+            <option value="young">Young (6m–2 yrs)</option>
+            <option value="adult">Adult (2–7 yrs)</option>
+            <option value="senior">Senior (7+ yrs)</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Weight Class</label>
+          <select id="pWt">
+            <option value="">Select weight</option>
+            <option value="tiny">Tiny (under 2 kg)</option>
+            <option value="small">Small (2–5 kg)</option>
+            <option value="medium">Medium (5–20 kg)</option>
+            <option value="large">Large (20+ kg)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Symptoms — select all that apply</label>
+        <div class="chips" id="symChips">
+          <div class="chip" data-s="lethargy">Lethargy</div>
+          <div class="chip" data-s="loss of appetite">Loss of Appetite</div>
+          <div class="chip" data-s="vomiting">Vomiting</div>
+          <div class="chip" data-s="diarrhea">Diarrhea</div>
+          <div class="chip" data-s="coughing">Coughing</div>
+          <div class="chip" data-s="sneezing">Sneezing</div>
+          <div class="chip" data-s="scratching">Excess Scratching</div>
+          <div class="chip" data-s="limping">Limping / Pain</div>
+          <div class="chip" data-s="hair loss">Hair Loss</div>
+          <div class="chip" data-s="eye discharge">Eye Discharge</div>
+          <div class="chip" data-s="ear odour">Ear Odour / Shaking</div>
+          <div class="chip" data-s="bloating">Bloating / Swollen Belly</div>
+          <div class="chip" data-s="drinking excess">Drinking Excessively</div>
+          <div class="chip" data-s="weight loss">Weight Loss</div>
+          <div class="chip" data-s="bad breath">Bad Breath</div>
+          <div class="chip" data-s="none">✓ No Symptoms</div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Additional Notes</label>
+        <textarea id="pNotes" placeholder="Duration of symptoms, recent food changes, any medicines already given…"></textarea>
+      </div>
+
+      <button class="btn-go" onclick="runAdvisor()">🔍 Get Medicine & Care Suggestions</button>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results" id="resPanel">
+      <div class="res-empty" id="emptyState">
+        <div class="e-icon">🌿</div>
+        <p>Your personalised medicine and care suggestions will appear here after you click Analyse.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MEDICINE KNOWLEDGE GUIDE -->
+<section class="sec" id="know" style="background:var(--white)">
+  <div class="sec-tag">💊 Medicine Guide</div>
+  <h2 class="sec-title">Common Pet <em>Medicines</em></h2>
+  <p class="sec-sub">General information on widely used over-the-counter and vet-prescribed medicines. Always verify with your vet before use.</p>
+  <div class="know-grid">
+    <div class="kcard" style="border-top:3px solid var(--g400)">
+      <div class="kcard-top">
+        <span class="kem">💊</span>
+        <h4>Antiparasitic Treatments</h4>
+        <p>Commonly used for fleas, ticks, and worms. <strong>Fipronil</strong> (Frontline), <strong>Ivermectin</strong>, and <strong>Praziquantel</strong> are widely recommended. Dosage is strictly weight-based.</p>
+      </div>
+      <div class="kcard-foot">⚠ Never use dog flea treatments on cats</div>
+    </div>
+    <div class="kcard" style="border-top:3px solid var(--g500)">
+      <div class="kcard-top">
+        <span class="kem">🧴</span>
+        <h4>Skin & Allergy Relief</h4>
+        <p><strong>Chlorphenamine</strong> (antihistamine) helps with mild allergies. <strong>Hydrocortisone</strong> cream (0.5–1%) can soothe localised irritation. <strong>Oatmeal shampoo</strong> is safe for most pets.</p>
+      </div>
+      <div class="kcard-foot">⚠ Avoid prolonged steroid use without vet guidance</div>
+    </div>
+    <div class="kcard" style="border-top:3px solid var(--g600)">
+      <div class="kcard-top">
+        <span class="kem">🫀</span>
+        <h4>Digestive Aids</h4>
+        <p><strong>Probiotics</strong> (FortiFlora, Proviable) restore gut flora after diarrhea. <strong>Metronidazole</strong> is commonly prescribed for GI infections. <strong>Kaolin-pectin</strong> helps mild stomach upsets.</p>
+      </div>
+      <div class="kcard-foot">⚠ Bland diet (rice + chicken) aids most GI issues</div>
+    </div>
+    <div class="kcard" style="border-top:3px solid var(--g400)">
+      <div class="kcard-top">
+        <span class="kem">👁</span>
+        <h4>Eye & Ear Drops</h4>
+        <p><strong>Saline eye wash</strong> is safe for gentle cleaning. <strong>Chloramphenicol</strong> eye drops treat bacterial conjunctivitis. <strong>Clotrimazole</strong> ear drops address fungal ear infections.</p>
+      </div>
+      <div class="kcard-foot">⚠ Don't use human eye drops — pH differs</div>
+    </div>
+    <div class="kcard" style="border-top:3px solid var(--g500)">
+      <div class="kcard-top">
+        <span class="kem">🦴</span>
+        <h4>Pain & Joint Support</h4>
+        <p><strong>Carprofen</strong> and <strong>Meloxicam</strong> are vet-prescribed NSAIDs for dogs. <strong>Glucosamine + Chondroitin</strong> supplements support joint health in senior pets.</p>
+      </div>
+      <div class="kcard-foot">⚠ Never give ibuprofen or paracetamol to pets</div>
+    </div>
+    <div class="kcard" style="border-top:3px solid var(--g600)">
+      <div class="kcard-top">
+        <span class="kem">🌡️</span>
+        <h4>Fever & Infection</h4>
+        <p><strong>Amoxicillin</strong> and <strong>Cephalexin</strong> are common vet-prescribed antibiotics. <strong>Never self-prescribe antibiotics</strong> — incorrect use causes resistance. Report fever above 39.5°C to a vet.</p>
+      </div>
+      <div class="kcard-foot">⚠ Antibiotics require vet prescription</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHEN TO SEE A VET -->
+<section class="sec" id="vet-signs" style="background:var(--g50)">
+  <div class="sec-tag">🚨 Emergency Signs</div>
+  <h2 class="sec-title">When to <em>See a Vet</em> Immediately</h2>
+  <p class="sec-sub">Some situations go beyond home advice. Recognise these red-flag signs and act fast.</p>
+  <div class="signs-grid">
+    <div class="sign-card"><div class="sign-dot" style="background:rgba(192,57,43,0.1)">🩸</div><div><h5>Bleeding / Wounds</h5><p>Any uncontrolled bleeding, deep cuts, or injuries need immediate professional attention.</p></div></div>
+    <div class="sign-card"><div class="sign-dot" style="background:rgba(192,57,43,0.1)">😵</div><div><h5>Seizures / Collapse</h5><p>Convulsions, sudden collapse, or loss of consciousness are emergencies. Rush to a vet.</p></div></div>
+    <div class="sign-card"><div class="sign-dot" style="background:rgba(192,57,43,0.1)">🤢</div><div><h5>Repeated Vomiting</h5><p>More than 3 times in a few hours, or vomit containing blood — don't wait, seek care.</p></div></div>
+    <div class="sign-card"><div class="sign-dot" style="background:rgba(192,57,43,0.1)">😮‍💨</div><div><h5>Breathing Difficulty</h5><p>Laboured breathing, blue gums, or open-mouth breathing in cats is a critical emergency.</p></div></div>
+    <div class="sign-card"><div class="sign-dot" style="background:rgba(192,57,43,0.1)">🚫</div><div><h5>Not Eating 24+ hrs</h5><p>Especially in cats and rabbits — fasting beyond 24 hrs can cause organ damage rapidly.</p></div></div>
+    <div class="sign-card"><div class="sign-dot" style="background:rgba(192,57,43,0.1)">🌡️</div><div><h5>High Fever</h5><p>A temperature above 39.7°C (103.5°F) in dogs and cats requires prompt vet evaluation.</p></div></div>
+    <div class="sign-card"><div class="sign-dot" style="background:rgba(192,57,43,0.1)">🐾</div><div><h5>Can't Walk / Stand</h5><p>Sudden inability to bear weight or stand could indicate spinal, neurological, or toxic causes.</p></div></div>
+    <div class="sign-card"><div class="sign-dot" style="background:rgba(192,57,43,0.1)">☠️</div><div><h5>Suspected Poisoning</h5><p>Ingestion of chocolate, grapes, xylitol, onion, or household chemicals — emergency immediately.</p></div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-grid">
+    <div class="foot-brand">
+      <h3>🐾 Paw<em>Care</em></h3>
+      <p>Free pet health advice and medicine suggestions for responsible pet owners. We guide — your vet treats.</p>
+      <div class="foot-disc">This platform is for educational purposes only and does not replace professional veterinary diagnosis or treatment. Always consult a licensed vet for your pet's health.</div>
+    </div>
+    <div class="foot-col">
+      <h4>Quick Links</h4>
+      <a href="#advisor">Health Advisor</a>
+      <a href="#know">Medicine Guide</a>
+      <a href="#vet-signs">Emergency Signs</a>
+    </div>
+    <div class="foot-col">
+      <h4>Toxic to Pets</h4>
+      <p>🍫 Chocolate</p>
+      <p>🍇 Grapes & Raisins</p>
+      <p>🧅 Onion & Garlic</p>
+      <p>🥜 Xylitol (sweetener)</p>
+      <p>🥑 Avocado</p>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2025 PawCare. Educational use only — not a substitute for veterinary care.</span>
+    <span>Made with 🐾 for pet lovers</span>
+  </div>
+</footer>
+
+<script>
+// ── Pet type selector ──────────────────────────────────────────
+let selType = '';
+document.querySelectorAll('.pt-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.pt-btn').forEach(x => x.classList.remove('sel'));
+    b.classList.add('sel'); selType = b.dataset.t;
+  });
+});
+
+// ── Symptom chips ──────────────────────────────────────────────
+let selSyms = new Set();
+document.querySelectorAll('.chip').forEach(c => {
+  c.addEventListener('click', () => {
+    const s = c.dataset.s;
+    if (s === 'none') {
+      selSyms.clear();
+      document.querySelectorAll('.chip').forEach(x => x.classList.remove('on'));
+      c.classList.add('on'); selSyms.add('none'); return;
+    }
+    document.querySelector('.chip[data-s="none"]').classList.remove('on');
+    selSyms.delete('none');
+    c.classList.toggle('on');
+    c.classList.contains('on') ? selSyms.add(s) : selSyms.delete(s);
+  });
+});
+
+// ── Medicine & advice database ─────────────────────────────────
+const DB = {
+  dog:{
+    icon:'🐶',
+    syms:{
+      lethargy:{
+        urgency:'medium',
+        meds:[],
+        advice:['Monitor for 24 hrs — note if they\'re eating, drinking, or moving less.','Check rectal temperature (normal: 38–39.2°C). Fever needs vet attention.','Ensure fresh water is available at all times.','If lethargy persists beyond 48 hrs, a vet visit is strongly recommended.']
+      },
+      'loss of appetite':{
+        urgency:'medium',
+        meds:['<span class="med-pill">Mirtazapine (vet Rx)</span> — appetite stimulant for short-term use'],
+        advice:['Try warming food to body temperature to enhance aroma.','Offer small amounts of boiled chicken and rice as a palatability test.','Check for dental pain — bad breath or pawing at mouth are clues.','Fasting up to 12 hrs can be normal; beyond 24 hrs, see a vet.']
+      },
+      vomiting:{
+        urgency:'high',
+        meds:['<span class="med-pill">Cerenia (Maropitant) — vet Rx</span> — anti-nausea, very effective in dogs','<span class="med-pill">Metoclopramide — vet Rx</span> — reduces nausea and gut motility issues','<span class="med-pill">Pepcid AC (Famotidine)</span> — OTC antacid, 0.5 mg/kg twice daily'],
+        advice:['Withhold food for 2–4 hrs, then offer bland diet (boiled rice + chicken).','Offer small amounts of water frequently to prevent dehydration.','Never give aspirin, ibuprofen, or paracetamol — toxic to dogs.','Blood in vomit or more than 3 episodes: seek emergency vet care.']
+      },
+      diarrhea:{
+        urgency:'medium',
+        meds:['<span class="med-pill">FortiFlora (Probiotic)</span> — restores gut bacteria, safe for all dogs','<span class="med-pill">Metronidazole — vet Rx</span> — antibiotic for infectious diarrhea','<span class="med-pill">Kaolin-Pectin</span> — OTC gut soother for mild cases'],
+        advice:['Bland diet (boiled rice + white chicken) for 48 hrs.','Keep water available constantly — diarrhea causes rapid dehydration.','Blood in stool or lasting more than 48 hrs = vet visit required.','Pumpkin puree (plain) — 1–2 tsp — can firm up loose stools naturally.']
+      },
+      coughing:{
+        urgency:'medium',
+        meds:['<span class="med-pill">Dextromethorphan</span> — mild cough suppressant (vet guidance needed for dose)','<span class="med-pill">Doxycycline — vet Rx</span> — for kennel cough (Bordetella) if diagnosed'],
+        advice:['Check that collar isn\'t too tight — swap to a harness.','Kennel cough sounds like a honking cough — contagious to other dogs.','Keep away from dog parks until cough resolves.','Humidifier in the room can help ease dry cough.']
+      },
+      sneezing:{
+        urgency:'low',
+        meds:['<span class="med-pill">Benadryl (Diphenhydramine)</span> — for allergy sneezing, 1 mg/kg twice daily','<span class="med-pill">Chlorphenamine</span> — mild antihistamine for seasonal allergies'],
+        advice:['Check for nasal discharge — clear = likely allergy; green/yellow = infection.','Remove strong air fresheners or cleaning products from pet areas.','Persistent sneezing with bloody discharge needs vet evaluation.']
+      },
+      scratching:{
+        urgency:'low',
+        meds:['<span class="med-pill">Frontline Plus / NexGard</span> — flea and tick prevention','<span class="med-pill">Benadryl (Diphenhydramine)</span> — 1 mg/kg twice daily for allergic itch','<span class="med-pill">Hydrocortisone cream 0.5%</span> — apply to small localised areas only','<span class="med-pill">Apoquel (Oclacitinib) — vet Rx</span> — fast-acting itch relief'],
+        advice:['Inspect coat for fleas using a fine-toothed comb (black specks = flea dirt).','Oatmeal bath soothes irritated skin temporarily.','Food allergies are common — consider single-protein diet trial.','Avoid grass walking during high pollen season for allergic dogs.']
+      },
+      limping:{
+        urgency:'high',
+        meds:['<span class="med-pill">Carprofen — vet Rx</span> — NSAID pain relief for dogs','<span class="med-pill">Meloxicam — vet Rx</span> — anti-inflammatory for joint or soft tissue pain','<span class="med-pill">Glucosamine + Chondroitin</span> — long-term joint support supplement'],
+        advice:['Rest strictly — no running, jumping, or stairs for 48–72 hrs.','Inspect paw pads for cuts, thorns, or swelling.','Never give ibuprofen, naproxen, or paracetamol — these are toxic to dogs.','If non-weight-bearing or bone visible, emergency vet visit immediately.']
+      },
+      'hair loss':{
+        urgency:'medium',
+        meds:['<span class="med-pill">Malaseb Shampoo</span> — for fungal-related hair loss','<span class="med-pill">Omega-3 Supplement (fish oil)</span> — supports skin and coat health','<span class="med-pill">Ketoconazole — vet Rx</span> — for ringworm or fungal dermatitis'],
+        advice:['Check for circular bald patches — may indicate ringworm (fungal, not a worm).','Hormonal causes (hypothyroidism, Cushing\'s) need blood panel.','Increase fish oil in diet for improved coat condition.','Keep affected areas clean and dry to prevent secondary infection.']
+      },
+      'eye discharge':{
+        urgency:'medium',
+        meds:['<span class="med-pill">Saline Eye Wash</span> — safe OTC cleaning solution','<span class="med-pill">Chloramphenicol Eye Drops — vet Rx</span> — for bacterial conjunctivitis','<span class="med-pill">Terramycin Ointment</span> — broad-spectrum antibiotic eye ointment'],
+        advice:['Gently wipe discharge with a damp cotton pad, outer corner inward.','Clear discharge = likely allergy or dust irritation.','Green/yellow or swollen eye = vet visit needed.','Never use human visine or contact lens drops on pets.']
+      },
+      'ear odour':{
+        urgency:'medium',
+        meds:['<span class="med-pill">Zymox Otic</span> — OTC enzymatic ear cleaner for mild infections','<span class="med-pill">Clotrimazole Ear Drops</span> — for yeast-based ear infections','<span class="med-pill">Otomax — vet Rx</span> — antibiotic/antifungal/steroid combo drops'],
+        advice:['Clean ears weekly with a vet-approved ear cleaner — never use Q-tips deep inside.','Brown waxy discharge = likely yeast. Dark grainy discharge = mites.','Keep ears dry after bathing or swimming.','Ear mites are contagious — treat all pets in the household.']
+      },
+      bloating:{
+        urgency:'high',
+        meds:[],
+        advice:['Bloat (GDV) in large dogs is a life-threatening emergency — do not wait.','If belly is visibly distended and dog is restless or unproductive retching, go to emergency vet NOW.','Do not attempt home treatment for bloat.','Prevention: use slow-feeder bowls, avoid exercise 1 hr after meals.']
+      },
+      'drinking excess':{
+        urgency:'high',
+        meds:[],
+        advice:['Excessive thirst (polydipsia) is a red flag for diabetes, kidney disease, or Cushing\'s syndrome.','Measure water intake — normal is ~50 ml per kg per day.','Do NOT restrict water — always keep it available.','Blood and urine tests (urinalysis, glucose, kidney panel) needed promptly.']
+      },
+      'weight loss':{
+        urgency:'high',
+        meds:['<span class="med-pill">Panacur (Fenbendazole)</span> — for intestinal parasites causing weight loss'],
+        advice:['Sudden weight loss (>10% body weight) needs urgent vet evaluation.','Check for intestinal worms — fecal exam recommended.','Dental disease can cause pain while eating and subsequent weight loss.','Blood panel, thyroid check, and organ function tests recommended.']
+      },
+      'bad breath':{
+        urgency:'low',
+        meds:['<span class="med-pill">Dental Chews (Virbac CET)</span> — enzymatic chews reduce tartar','<span class="med-pill">Pet toothpaste (enzymatic)</span> — brush 2–3×/week','<span class="med-pill">Chlorhexidine Oral Rinse</span> — antibacterial mouth rinse for dogs'],
+        advice:['Dental disease affects 80%+ of dogs by age 3 — brush regularly.','Very foul breath (kidney-like) can indicate organ disease.','Hard kibble helps mechanically reduce plaque.','Annual dental scaling by a vet is recommended.']
+      }
+    }
+  },
+  cat:{
+    icon:'🐱',
+    syms:{
+      lethargy:{urgency:'medium',meds:[],advice:['Cats sleep 12–16 hrs normally; compare to their usual baseline.','Any sudden severe lethargy in cats escalates quickly — vet within 24 hrs.','Check if they\'re using the litter box and eating normally.','Look for hiding behaviour — cats in pain often isolate themselves.']},
+      'loss of appetite':{urgency:'high',meds:['<span class="med-pill">Mirtazapine (Mirataz) — vet Rx</span> — transdermal appetite stimulant for cats','<span class="med-pill">Cyproheptadine — vet Rx</span> — antihistamine with appetite-stimulating effect'],advice:['Cats cannot go more than 24–48 hrs without food (hepatic lipidosis risk).','Warm the food to body temperature — cats are driven by aroma.','Try different textures: pâté, chunks, broth.','Dental pain is a top reason cats stop eating — check for drooling.']},
+      vomiting:{urgency:'medium',meds:['<span class="med-pill">Cerenia (Maropitant) — vet Rx</span> — anti-nausea injection or tablet','<span class="med-pill">Hairball Remedy (Laxatone)</span> — petroleum-based gel for hairball vomiting'],advice:['Occasional hairball vomiting (once a week) is normal.','More than twice per day or blood in vomit = vet visit.','Regular brushing reduces hairball frequency.','Feed smaller, more frequent meals to reduce regurgitation.']},
+      sneezing:{urgency:'medium',meds:['<span class="med-pill">L-Lysine supplement</span> — reduces herpesvirus flare-up severity','<span class="med-pill">Doxycycline — vet Rx</span> — for secondary bacterial infections in cat flu'],advice:['Cat flu (herpesvirus / calicivirus) is very common and contagious.','Clear discharge = viral; green/yellow discharge = bacterial secondary infection.','Isolate from other cats until resolved.','Keep eyes and nose clear with damp cotton wool.']},
+      scratching:{urgency:'low',meds:['<span class="med-pill">Revolution (Selamectin)</span> — flea, ear mite, and worm prevention for cats','<span class="med-pill">Chlorphenamine</span> — antihistamine for allergy-related scratching (vet-guided dose)'],advice:['Check ears for dark waxy debris — sign of mites.','Ensure litter box is clean — cats over-groom when stressed.','Food allergy trial: switch to hydrolysed protein food for 6–8 weeks.','Never use dog flea treatments on cats — permethrin is fatal to cats.']},
+      'eye discharge':{urgency:'medium',meds:['<span class="med-pill">Saline Eye Wash</span> — daily gentle cleaning','<span class="med-pill">Fucithalmic (Fusidic Acid) — vet Rx</span> — antibiotic eye gel for cats','<span class="med-pill">L-Lysine supplement</span> — for herpesvirus-related eye issues'],advice:['Herpesvirus is the most common cause of eye discharge in cats.','Flat-faced breeds (Persians) have chronic tear overflow — clean daily.','Never use human eye drops on cats.','Pawing at eyes + redness + swelling = vet visit needed.']},
+      limping:{urgency:'high',meds:['<span class="med-pill">Meloxicam — vet Rx</span> — NSAID pain relief safe for cats (short-term, with vet guidance)','<span class="med-pill">Gabapentin — vet Rx</span> — nerve pain and chronic pain management'],advice:['Cats hide pain very well — any visible limping is significant.','Inspect paw pads gently for thorns, cuts, or abscess.','Abscesses from cat fights are very common — warm compress helps.','X-ray recommended if swelling or non-weight-bearing.']},
+      'drinking excess':{urgency:'high',meds:[],advice:['Hyperthyroidism and chronic kidney disease are the top causes in cats over 7.','Diabetes mellitus is also common — increased urination accompanies it.','Blood panel (T4, kidney values, glucose) and urinalysis are urgently needed.','Early detection dramatically improves quality of life and prognosis.']},
+      'hair loss':{urgency:'medium',meds:['<span class="med-pill">Omega-3 Fish Oil supplement</span> — improves coat condition','<span class="med-pill">Prednisolone — vet Rx</span> — for immune-related or allergic over-grooming'],advice:['Over-grooming (psychogenic alopecia) is often stress-related — assess environment.','Circular patches = possible ringworm — isolate and seek vet advice.','Flea allergy dermatitis is the #1 cause of hair loss at the base of the tail.','Environmental enrichment (toys, perches, play) can reduce stress-grooming.']},
+      'ear odour':{urgency:'medium',meds:['<span class="med-pill">Zymox Otic</span> — OTC enzymatic ear cleaner','<span class="med-pill">Revolution (Selamectin)</span> — kills ear mites systemically','<span class="med-pill">Posatex — vet Rx</span> — for yeast and bacterial ear infections'],advice:['Dark grainy "coffee ground" discharge in both ears = ear mites (very common in cats).','Treat all cats in the household simultaneously for mites.','Never insert Q-tips deep into the ear canal.','Persistent head-shaking or tilting warrants vet exam.']},
+      'bad breath':{urgency:'low',meds:['<span class="med-pill">Virbac CET Enzymatic Toothpaste</span> — cat-safe, no fluoride','<span class="med-pill">Dental water additive</span> — added to water bowl daily'],advice:['Dental disease is the #1 health issue in cats over 3 years old.','Extremely foul (ammonia-like) breath can indicate kidney disease.','Wet food alone does not clean teeth — brushing is essential.','Annual dental scaling under anaesthesia is the gold standard.']},
+      diarrhea:{urgency:'medium',meds:['<span class="med-pill">Proviable (Probiotic)</span> — restores gut flora post-diarrhea','<span class="med-pill">Metronidazole — vet Rx</span> — for Giardia or bacterial diarrhea'],advice:['Switch to bland diet: boiled chicken + plain white rice for 48 hrs.','Ensure hydration — consider adding low-sodium chicken broth to water.','Blood in stool or diarrhea lasting more than 48 hrs = vet visit.','Hairballs can sometimes present as loose stools.']},
+    }
+  },
+  rabbit:{
+    icon:'🐰',
+    syms:{
+      lethargy:{urgency:'high',meds:[],advice:['Rabbits deteriorate EXTREMELY fast — same-day vet visit is essential.','GI stasis (gut slowdown) is the most common serious cause — check for droppings.','Keep warm (28–30°C) and gently massage the belly while arranging vet care.','Do not force feed without vet guidance.']},
+      'loss of appetite':{urgency:'high',meds:[],advice:['Stop in droppings AND no eating = GI stasis emergency. Rush to vet.','Offer favourite greens to tempt eating while preparing for vet visit.','GI stasis can be fatal within hours in rabbits — do not wait overnight.','Critical Care (Oxbow) syringe feeding may be advised by your vet.']},
+      diarrhea:{urgency:'high',meds:['<span class="med-pill">Cholestyramine — vet Rx</span> — for enterotoxaemia in rabbits'],advice:['True watery diarrhea in rabbits is an emergency — not the same as soft cecotropes.','Remove all fresh vegetables and pellets; provide only hay and water.','Enterotoxaemia (deadly) is a possible cause — emergency vet immediately.','Note: cecotropes (soft, grape-like pellets) are normal and should be eaten by the rabbit.']},
+      bloating:{urgency:'high',meds:[],advice:['Bloat in rabbits is a life-threatening emergency.','Visibly swollen hard belly + not eating + not pooping = emergency vet NOW.','Simethicone (Infacol, 1 ml) can help with gas while en route to vet.','Do not attempt home treatment for rabbit bloat.']},
+      scratching:{urgency:'medium',meds:['<span class="med-pill">Revolution (Selamectin)</span> — for mites in rabbits','<span class="med-pill">Ivermectin — vet Rx</span> — for mange or fur mites'],advice:['Check for fur mites — white flakes or dandruff in coat are a sign.','Ear mites cause crusty brown debris in ears.','Ringworm causes circular scaly patches — isolate from other pets.','Ensure bedding is changed frequently.']},
+    }
+  },
+  bird:{
+    icon:'🐦',
+    syms:{
+      lethargy:{urgency:'high',meds:[],advice:['Birds mask illness until critical — any lethargy or fluffed feathers needs urgent avian vet attention.','Keep bird warm (30–32°C) using a heat lamp while arranging care.','Tail bobbing and laboured breathing = respiratory emergency.','Do not attempt home treatment — avian physiology is very different from mammals.']},
+      'loss of appetite':{urgency:'high',meds:[],advice:['Birds have very high metabolisms — missing 2 meals is clinically significant.','Check crop — hard or empty crop can indicate crop impaction or infection.','Emergency avian vet needed same day.','Offer favourite foods as an interim measure only.']},
+      sneezing:{urgency:'medium',meds:['<span class="med-pill">Doxycycline — vet Rx</span> — for Psittacosis (Chlamydophila) treatment'],advice:['Occasional sneezing from dust is normal.','Persistent sneezing with nasal discharge = vet needed.','Psittacosis (parrot fever) is contagious to humans — precaution required.','Improve ventilation and remove dusty substrates.']},
+      scratching:{urgency:'medium',meds:['<span class="med-pill">Ivermectin — vet Rx</span> — for feather mites or scaly face mites'],advice:['Scaly face mites in budgies cause crusty lesions around beak and eyes.','Feather destructive behaviour may be psychological — environmental enrichment helps.','Ensure correct humidity for species (tropical birds need 50–70%).','Avian vet exam needed for accurate diagnosis.']},
+    }
+  },
+  fish:{
+    icon:'🐠',
+    syms:{
+      lethargy:{urgency:'medium',meds:['<span class="med-pill">API Melafix</span> — for bacterial infections','<span class="med-pill">API Pimafix</span> — for fungal infections','<span class="med-pill">Ich-X</span> — for white spot (ichthyophthirius) disease'],advice:['Test water immediately: ammonia, nitrite, nitrate, pH — most fish illness is water quality.','Check temperature — ensure it\'s stable for the species.','White salt-like spots = ich (very treatable if caught early).','Isolate sick fish in a hospital tank to prevent spread.']},
+      'loss of appetite':{urgency:'medium',meds:['<span class="med-pill">Epsom Salt bath</span> — 1 tsp/gallon for 15 min to help with internal parasites'],advice:['Perform 25–30% water change immediately.','Try different food types — frozen daphnia or bloodworm can re-stimulate appetite.','Hollow belly + stringy white faeces = likely internal parasites.','Check for swim bladder issues: fish floating sideways.']},
+      bloating:{urgency:'high',meds:['<span class="med-pill">Epsom Salt</span> — 1 tsp/gallon as a hospital tank treatment for dropsy'],advice:['Pinecone-like raised scales = dropsy (organ failure) — often fatal, isolate immediately.','Overfeeding is the most common cause of bloating — fast fish for 1–2 days.','Ensure filtration is adequate for tank size.','Dropsy usually indicates systemic infection — aggressive treatment needed.']},
+    }
+  },
+  other:{
+    icon:'🦔',
+    syms:{
+      lethargy:{urgency:'high',meds:[],advice:['Exotic animals mask illness effectively — any behaviour change warrants prompt attention.','Find a certified exotic/specialist vet in your area immediately.','Keep the animal warm and calm while arranging professional care.','Do not administer any medications without specialist guidance.']},
+      'loss of appetite':{urgency:'high',meds:[],advice:['Exotic species have unique metabolic needs — fasting effects vary widely.','Research species-specific fasting tolerance before assuming it\'s normal.','Consult an exotic animal vet for species-appropriate advice.','Environmental checks: temperature, humidity, lighting cycles — all affect appetite.']},
+    }
+  }
+};
+
+function healthScore(syms, type) {
+  if (syms.has('none') || syms.size===0) return {s:94, l:'Excellent', c:'var(--g500)'};
+  let score = 100;
+  syms.forEach(sym => {
+    const entry = DB[type]?.syms?.[sym];
+    if (!entry) return;
+    if (entry.urgency==='high')   score -= 24;
+    if (entry.urgency==='medium') score -= 12;
+    if (entry.urgency==='low')    score -=  5;
+  });
+  score = Math.max(15, Math.min(score, 93));
+  if (score>=75) return {s:score, l:'Good',             c:'var(--g500)'};
+  if (score>=50) return {s:score, l:'Needs Care',       c:'#d4a02a'};
+  return              {s:score, l:'Needs Vet Attention', c:'#c0392b'};
+}
+
+function runAdvisor() {
+  const name  = document.getElementById('pName').value.trim()  || 'Your Pet';
+  const breed = document.getElementById('pBreed').value.trim();
+  const age   = document.getElementById('pAge').value;
+  const wt    = document.getElementById('pWt').value;
+  const notes = document.getElementById('pNotes').value.trim();
+
+  if (!selType) { alert('Please select a pet type first 🐾'); return; }
+
+  const panel = document.getElementById('resPanel');
+  panel.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;padding:60px 0;">
+    <div class="ldots"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>
+    <p style="color:var(--text3);font-size:0.83rem;margin-top:12px;">Analysing ${name}'s symptoms…</p>
+  </div>`;
+
+  setTimeout(() => buildResults(name, breed, age, wt, notes), 1300);
+}
+
+function buildResults(name, breed, age, wt, notes) {
+  const db   = DB[selType] || DB.other;
+  const syms = [...selSyms];
+  const hs   = healthScore(selSyms, selType);
+  const ageL = {baby:'Baby',young:'Young',adult:'Adult',senior:'Senior'}[age]||'';
+  const wtL  = {tiny:'Tiny',small:'Small',medium:'Medium',large:'Large'}[wt]||'';
+
+  let html = '';
+
+  // Header
+  html += `<div class="res-header">
+    <div class="res-avatar">${db.icon}</div>
+    <div>
+      <div class="res-name">${name}${breed ? ` · ${breed}` : ''}</div>
+      <div class="res-meta">${[ageL, wtL, selType.charAt(0).toUpperCase()+selType.slice(1)].filter(Boolean).join(' · ')}</div>
+    </div>
+    <div class="score-box">
+      <div class="score-n">${hs.s}</div>
+      <div class="score-l">${hs.l}</div>
+    </div>
+  </div>`;
+
+  // Disclaimer inside results
+  html += `<div style="background:var(--g50);border:1px solid var(--g200);border-radius:12px;padding:13px 16px;font-size:0.77rem;color:var(--text2);line-height:1.6;">
+    ⚠️ <strong>Suggestion only</strong> — these are general guidance tips and common OTC medicine options. Always confirm with a licensed veterinarian before administering any medication.
+  </div>`;
+
+  // Urgent symptoms
+  const urgentSyms = syms.filter(s => db.syms?.[s]?.urgency==='high' && s!=='none');
+  if (urgentSyms.length>0) {
+    html += `<div class="rblock urgent-strip">
+      <div class="rblock-title"><div class="ri" style="background:rgba(192,57,43,0.1)">🚨</div>Urgent Symptoms <span class="utag">See Vet Soon</span></div>
+      <ul class="rlist">`;
+    urgentSyms.forEach(s => {
+      const e = db.syms[s];
+      html += `<li><strong>${cap(s)}:</strong> ${e.advice[0]}</li>`;
+    });
+    html += `</ul></div>`;
+  }
+
+  // Per-symptom medicine + advice
+  const otherSyms = syms.filter(s => db.syms?.[s] && db.syms[s].urgency!=='high' && s!=='none');
+  otherSyms.forEach(s => {
+    const e = db.syms[s];
+    html += `<div class="rblock">
+      <div class="rblock-title"><div class="ri" style="background:var(--g100)">💊</div>${cap(s)}</div>`;
+    if (e.meds && e.meds.length>0) {
+      html += `<p style="font-size:0.72rem;font-weight:700;color:var(--g700);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Suggested Medicines</p>
+      <p style="font-size:0.83rem;color:var(--text2);line-height:1.8;margin-bottom:12px;">${e.meds.join('<br>')}</p>`;
+    }
+    html += `<p style="font-size:0.72rem;font-weight:700;color:var(--g700);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Care Steps</p>
+    <ul class="rlist">${e.advice.map(a=>`<li>${a}</li>`).join('')}</ul></div>`;
+  });
+
+  // Full advice for all urgent syms
+  urgentSyms.forEach(s => {
+    const e = db.syms[s];
+    if (!e) return;
+    html += `<div class="rblock">
+      <div class="rblock-title"><div class="ri" style="background:var(--g100)">📋</div>${cap(s)} — Full Guidance</div>`;
+    if (e.meds && e.meds.length>0) {
+      html += `<p style="font-size:0.72rem;font-weight:700;color:var(--g700);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Suggested Medicines</p>
+      <p style="font-size:0.83rem;color:var(--text2);line-height:1.8;margin-bottom:12px;">${e.meds.join('<br>')}</p>`;
+    }
+    html += `<ul class="rlist">${e.advice.slice(1).map(a=>`<li>${a}</li>`).join('')}</ul></div>`;
+  });
+
+  // No symptoms
+  if (syms.includes('none') || syms.length===0) {
+    html += `<div class="rblock ok-strip">
+      <div class="rblock-title"><div class="ri" style="background:var(--g100)">✅</div>${name} appears symptom-free!</div>
+      <ul class="rlist">
+        <li>Keep up regular deworming and parasite prevention every 3 months.</li>
+        <li>Annual health check recommended even for healthy pets — early detection saves lives.</li>
+        <li>Ensure fresh water, species-appropriate diet, and daily exercise or enrichment.</li>
+        <li>Keep vaccination records up to date.</li>
+      </ul>
+    </div>`;
+  }
+
+  // Age note
+  const ageTips = {
+    baby:`Baby pets need more frequent meals, early socialisation, and their complete primary vaccination course.`,
+    young:`${name} is in a high-energy phase. Focus on enrichment, structured training, and balanced nutrition for growth.`,
+    adult:`Adult pets benefit from routine — consistent feeding times, regular exercise, and annual check-ups.`,
+    senior:`Senior pets need bi-annual vet visits, joint-support supplements, and a diet adjusted for lower calorie needs. Monitor for subtle behaviour changes.`
+  };
+  if (age) {
+    html += `<div class="rblock">
+      <div class="rblock-title"><div class="ri" style="background:var(--g100)">📅</div>Age-Specific Advice</div>
+      <p style="font-size:0.84rem;color:var(--text2);line-height:1.7;">${ageTips[age]}</p>
+    </div>`;
+  }
+
+  // User notes
+  if (notes) {
+    html += `<div class="rblock" style="border-left:3px solid var(--g400)">
+      <div class="rblock-title"><div class="ri" style="background:var(--g100)">📝</div>Your Notes</div>
+      <p style="font-size:0.82rem;color:var(--text2);line-height:1.7;font-style:italic;">"${notes}"</p>
+      <p style="font-size:0.77rem;color:var(--text3);margin-top:8px;">Share these notes with your vet for more accurate diagnosis and treatment.</p>
+    </div>`;
+  }
+
+  // Final disclaimer CTA
+  html += `<div style="background:linear-gradient(135deg,var(--g900),var(--g700));border-radius:14px;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
+    <div>
+      <p style="color:#fff;font-family:'Fraunces',serif;font-size:1rem;font-weight:700;">Always Confirm With a Vet</p>
+      <p style="color:rgba(255,255,255,0.65);font-size:0.77rem;margin-top:3px;">Our suggestions are a starting point — a vet gives the final word.</p>
+    </div>
+    <button onclick="document.getElementById('vet-signs').scrollIntoView({behavior:'smooth'})" style="background:rgba(255,255,255,0.15);color:#fff;border:1.5px solid rgba(255,255,255,0.3);padding:9px 18px;border-radius:99px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">🚨 See Emergency Signs</button>
+  </div>`;
+
+  document.getElementById('resPanel').innerHTML = html;
+  document.getElementById('resPanel').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function cap(s) { return s.charAt(0).toUpperCase()+s.slice(1); }
+</script>
+</body>
+</html>
